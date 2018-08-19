@@ -2,6 +2,8 @@ Repository for question similarity with domain adaptation.
 
 Requirements: Pytorch 0.1.11
 
+For questions, email darsh@csail.mit.edu
+
 The MIT License
 
 Copyright (c) 2010-2018 Google, Inc. http://angularjs.org
