@@ -1,0 +1,57 @@
+12c12
+< class DOM_DAN(ModelBase):
+---
+> class DAN(ModelBase):
+16c16
+<         super(DOM_DAN, DOM_DAN).add_config(cfgparser)
+---
+>         super(DAN, DAN).add_config(cfgparser)
+24c24
+<         super(DOM_DAN, self).__init__(configs)
+---
+>         super(DAN, self).__init__(configs)
+53,73d52
+<         #self.output_layer = nn.Linear(self.n_out, 2)
+< 
+<         self.domain_classifier = False
+< 
+<         self.domain_classifier_layer = nn.Sequential()
+<         self.domain_classifier_layer.add_module('linear-{}'.format(0),
+<             nn.Linear(n_out, n_out)
+<         )
+<         self.domain_classifier_layer.add_module('activation-{}'.format(0),
+<             nn.ReLU()
+<         )
+<         self.domain_classifier_layer.add_module('linear-{}'.format(1),
+<             nn.Linear(n_out, n_out)
+<         )
+<         self.domain_classifier_layer.add_module('activation-{}'.format(1),
+<             nn.ReLU()
+<         )
+<         self.domain_classifier_layer.add_module('linear-{}'.format(2),
+<             nn.Linear(self.n_out, 2)
+<         )
+< 
+78,89c57
+<         if not self.domain_classifier:
+<             pair_left, pair_right = batch_pair
+< 
+<             # size (batch, n_d)
+<             out_left = self.forward_one_side(pair_left)
+<             out_right = self.forward_one_side(pair_right)
+< 
+<             return self.compute_output(out_left, out_right)
+< 
+<         else:
+<             out = self.forward_one_side(batch_pair)
+<             out = self.domain_classifier_layer.forward(out)
+---
+>         pair_left, pair_right = batch_pair
+91c59,61
+<             return out
+---
+>         # size (batch, n_d)
+>         out_left = self.forward_one_side(pair_left)
+>         out_right = self.forward_one_side(pair_right)
+92a63
+>         return self.compute_output(out_left, out_right)
