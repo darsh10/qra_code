@@ -4,6 +4,7 @@ Requirements: Pytorch 0.1.11
 
 For questions, email darsh@csail.mit.edu
 
+-----------------------------------------------------------------------------
 The MIT License
 
 Copyright (c) 2010-2018 Google, Inc. http://angularjs.org
@@ -25,6 +26,8 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
+
+------------------------------------------------------------------------------
 
 Data is available at https://drive.google.com/file/d/1H26LUWeso0gT8TUvLd7W23WGBjyoAS7z/view?usp=sharing
 
