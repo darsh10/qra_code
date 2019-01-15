@@ -48,3 +48,4 @@ Data is available at https://drive.google.com/file/d/1H26LUWeso0gT8TUvLd7W23WGBj
 Word vectors used for the project are available at https://doc-0c-1s-docs.googleusercontent.com/docs/securesc/4r56p57lqt87fovm26mmkn3flopudeu2/pr9nmpobg1vrm9mmd06uqddis6qhbj7m/1547582400000/02526323383333825675/02526323383333825675/17RcM_senbkcurXOUg-864LZAsn3OiTjM?e=download
 
 ------------------------------------------------------------------------------
+The hyper-parameters of the baseline model are the following:  number of hidden dimensions of the LSTM 100, the dropout {0.0, 0.1}, learning rate {0.0001, 0.0005, 0.001}, and the number of layers of LSTMs 1.
