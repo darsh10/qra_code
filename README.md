@@ -44,7 +44,6 @@ python main_domain.py --cuda --run_dir /tmp/ --model lstm --train ../askubuntu/t
 Data is available at https://drive.google.com/file/d/1H26LUWeso0gT8TUvLd7W23WGBjyoAS7z/view?usp=sharing
 
 -------------------------------------------------------------------------------
-
-Word vectors used for the project are available at https://drive.google.com/file/d/17RcM_senbkcurXOUg-864LZAsn3OiTjM/view?usp=sharing
+Embeddings: https://drive.google.com/file/d/17RcM_senbkcurXOUg-864LZAsn3OiTjM/view?usp=sharing
 ------------------------------------------------------------------------------
 The hyper-parameters of the baseline model are the following:  number of hidden dimensions of the LSTM 100, the dropout {0.0, 0.1}, learning rate {0.0001, 0.0005, 0.001}, and the number of layers of LSTMs 1.
