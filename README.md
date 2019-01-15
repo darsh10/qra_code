@@ -29,28 +29,22 @@ THE SOFTWARE.
 
 ------------------------------------------------------------------------------
 
-###
 
 Data is available at https://drive.google.com/file/d/1H26LUWeso0gT8TUvLd7W23WGBjyoAS7z/view?usp=sharing
 
-###
-
-###
+------------------------------------------------------------------------------
 
 Word vectors used for the project are available at https://doc-0c-1s-docs.googleusercontent.com/docs/securesc/4r56p57lqt87fovm26mmkn3flopudeu2/pr9nmpobg1vrm9mmd06uqddis6qhbj7m/1547582400000/02526323383333825675/02526323383333825675/17RcM_senbkcurXOUg-864LZAsn3OiTjM?e=download
 
-###
+------------------------------------------------------------------------------
 
-###
 
 To run the direct model, a sample command is 
 
 python main.py --cuda --run_dir /tmp/ --model lstm --train ../askubuntu/train --eval ../android/ --bidir --d 100 --embedding ../word_vectors/all_corpora_vectors.txt --max_epoch 50 --use_content --eval_use_content --criterion cosine
 
-###
+-------------------------------------------------------------------------------
 
-###
 To run the adversarial model, a sample command is 
 
 python main_domain.py --cuda --run_dir /tmp/ --model lstm --train ../askubuntu/train --eval ../android/ --bidir --d 100 --embedding ../word_vectors/all_corpora_vectors.txt --max_epoch 50 --use_content --eval_use_content --criterion cosine --cross_domain ../android/ --wasserstein
-###
