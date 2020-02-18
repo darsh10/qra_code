@@ -7,15 +7,19 @@ For questions, email darsh@csail.mit.edu
 
 ------------------------------------------------------------------------------
 
-To run the direct model, a sample command is 
+To run the direct model (No Adaptation), a sample command is 
 
-python main.py --cuda --run_dir /tmp/ --model lstm --train ../askubuntu/train --eval ../android/ --bidir --d 100 --embedding ../word_vectors/all_corpora_vectors.txt --max_epoch 50 --use_content --eval_use_content --criterion cosine
+<p><code>
+    python main.py --cuda --run_dir /tmp/ --model lstm --train ../askubuntu/train --eval ../android/ --bidir --d 100 --embedding ../word_vectors/all_corpora_vectors.txt --max_epoch 50 --use_content --eval_use_content --criterion cosine
+    </p></code>
 
 -------------------------------------------------------------------------------
 
 To run the adversarial model, a sample command is 
 
+<p><code>
 python main_domain.py --cuda --run_dir /tmp/ --model lstm --train ../askubuntu/train --eval ../android/ --bidir --d 100 --embedding ../word_vectors/all_corpora_vectors.txt --max_epoch 50 --use_content --eval_use_content --criterion cosine --cross_train ../android/ --wasserstein
+    </p></code>
 
 -------------------------------------------------------------------------------
 
