@@ -45,10 +45,10 @@ def load_embedding_txt(path):
                 parts = line.split()
                 if len(parts) != 301:
                     continue
-                if parts[0].decode('utf-8') in words_selected:
+                if parts[0] in words_selected:
                     continue
-                words.append(parts[0].decode('utf-8'))
-                words_selected.add(parts[0].decode('utf-8'))
+                words.append(parts[0])
+                words_selected.add(parts[0])
                 vals += [ float(x) for x in parts[-300:] ]
     return words, np.asarray(vals).reshape(len(words),-1)
 
@@ -82,7 +82,7 @@ def make_batch(emblayer, sequences, oov='<oov>', pad_left=False):
     batch_size = len(sequences)
     length = len(sequences[0])
     word2id, oovid = emblayer.word2id, emblayer.oovid
-    data = torch.LongTensor(list(word2id.get(w.decode('utf-8'), oovid) for s in sequences for w in s))
+    data = torch.LongTensor(list(word2id.get(w, oovid) for s in sequences for w in s))
     assert data.size(0) == batch_size*length
     return data.view(batch_size, length).t().contiguous()
 
@@ -230,7 +230,7 @@ class FileLoader(object):
     def __iter__(self):
         return self
 
-    def next(self):
+    def __next__(self):
         pos, tot, batch_size = self.pos, self.tot, self.batch_size
         if pos < tot:
             self.pos += batch_size
@@ -469,7 +469,7 @@ class Corpus(object):
         self.data_content = {}
         self.words = {}
         for file_path,key in file_paths:
-            with gzip.open(file_path) as fin:
+            with gzip.open(file_path, 'rt') as fin:
                 for line in fin:
                     parts = line.split('\t')
                     uid, title = parts[0]+key, parts[1]

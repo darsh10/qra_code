@@ -1,6 +1,8 @@
 
 import torch
 import torch.nn as nn
+import torch.nn.functional as f
+import numpy as np
 
 torch.manual_seed(10)
 
@@ -24,18 +26,24 @@ def indent(text, amount, ch=' '):
 
 def normalize_2d(x, eps=1e-8):
     assert x.dim() == 2
-    l2 = x.norm(2,1)
-    print l2.data.size()
-    print x.data.size()
-    print (l2+eps).expand_as(x).data.size()
-    return x/((l2+eps).expand_as(x))
+    # l2 = x.norm(2,1)
+    # print l2.data.size()
+    # print x.data.size()
+    # print (l2+eps).expand_as(x).data.size()
+    # return x/((l2+eps).expand_as(x))
+    norm = x.norm(p=2, dim=1, keepdim=True)
+    return x.div(norm)
 
 def cosine_similarity(u, v):
-    u2 = normalize_2d(u)
-    v2 = normalize_2d(v)
-    assert u2.dim() == 2
-    assert v2.dim() == 2
-    return (u2*v2).sum(1)
+    assert u.dim() == 2
+    assert v.dim() == 2
+    cos = nn.CosineSimilarity(dim=1, eps=1e-8)
+    # u2 = normalize_2d(u)
+    # v2 = normalize_2d(v)
+    # assert u2.dim() == 2
+    # assert v2.dim() == 2
+    # return (u2*v2).sum(1)
+    return cos(u, v)[:, np.newaxis]
 
 class ModelBase(nn.Module):
 
@@ -84,7 +92,7 @@ class ModelBase(nn.Module):
         elif crt == 'classification2':
             return nn.functional.cross_entropy(output, target)
         elif crt == 'cosine':
-            k = target.size(0)/2
+            k = int(target.size(0)/2)
             #print target[0]
             assert target[0] == 1
             assert target[k] == 0
