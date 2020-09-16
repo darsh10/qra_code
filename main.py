@@ -10,8 +10,7 @@ import torch
 import torch.nn as nn
 import torch.optim as optim
 from torch.autograd import Variable
-from tensorboard import summary
-from tensorboard import FileWriter
+from torch.utils.tensorboard import SummaryWriter
 
 from model_factory import get_model_class
 from utils import Corpus, EmbeddingLayer, FileLoader, RandomLoader, CombinedLoader
@@ -20,7 +19,8 @@ from utils.meter import AUCMeter
 
 def train(iter_cnt, model, corpus, args, optimizer):
 
-    train_writer = FileWriter(args.run_path+"/train", flush_secs=5)
+    train_writer = SummaryWriter(args.run_path+"/train", flush_secs=5)
+    model.train()
 
     pos_file_path = "{}.pos.txt".format(args.train)
     neg_file_path = "{}.neg.txt".format(args.train)
@@ -69,7 +69,7 @@ def train(iter_cnt, model, corpus, args, optimizer):
         if args.cuda:
             batch = [ x.cuda() for x in batch ]
             labels = labels.cuda()
-        batch = map(Variable, batch)
+        batch = list(map(Variable, batch))
         labels = Variable(labels)
         repr_left = None
         repr_right = None
@@ -83,7 +83,7 @@ def train(iter_cnt, model, corpus, args, optimizer):
         loss = criterion(output, labels)
         loss.backward()
         optimizer.step()
-        tot_loss += loss.data[0]*output.size(0)
+        tot_loss += loss.data.item()*output.size(0)
         tot_cnt += output.size(0)
         if iter_cnt % 100 == 0:
             say("\r" + " "*50)
@@ -91,8 +91,8 @@ def train(iter_cnt, model, corpus, args, optimizer):
                 iter_cnt, tot_loss / tot_cnt,
                 tot_cnt/(time.time()-start)
             ))
-            s = summary.scalar('loss', tot_loss/tot_cnt)
-            train_writer.add_summary(s, iter_cnt)
+            # s = summary.scalar('loss', tot_loss/tot_cnt)
+            train_writer.add_scalar('loss', tot_loss/tot_cnt, iter_cnt)
 
     say("\n")
     train_writer.close()
@@ -103,7 +103,7 @@ def train(iter_cnt, model, corpus, args, optimizer):
 
 def evaluate(iter_cnt, filepath, model, corpus, args, logging=True):
     if logging:
-        valid_writer = FileWriter(args.run_path+"/valid", flush_secs=5)
+        valid_writer = SummaryWriter(args.run_path+"/valid", flush_secs=5)
 
     pos_file_path = "{}.pos.txt".format(filepath)
     neg_file_path = "{}.neg.txt".format(filepath)
@@ -124,7 +124,7 @@ def evaluate(iter_cnt, filepath, model, corpus, args, logging=True):
     scores = [ np.asarray([], dtype='float32') for i in range(2) ]
     for loader_id, loader in enumerate((neg_batch_loader, pos_batch_loader)):
         for data in loader:
-            data = map(corpus.get, data)
+            data = list(map(corpus.get, data))
             batch = None
             if not args.eval_use_content:
                 batch = (batchify(data[0][0]), batchify(data[1][0]))
@@ -187,22 +187,23 @@ def evaluate(iter_cnt, filepath, model, corpus, args, logging=True):
     ))
 
     if logging:
-        s = summary.scalar('auc', auc_score)
-        valid_writer.add_summary(s, iter_cnt)
-        s = summary.scalar('auc (fpr<0.1)', auc10_score)
-        valid_writer.add_summary(s, iter_cnt)
-        s = summary.scalar('auc (fpr<0.05)', auc05_score)
-        valid_writer.add_summary(s, iter_cnt)
-        s = summary.scalar('auc (fpr<0.02)', auc02_score)
-        valid_writer.add_summary(s, iter_cnt)
-        s = summary.scalar('auc (fpr<0.01)', auc01_score)
-        valid_writer.add_summary(s, iter_cnt)
+        # s = summary.scalar('auc', auc_score)
+        valid_writer.add_scalar('auc', auc_score, iter_cnt)
+        # s = summary.scalar('auc (fpr<0.1)', auc10_score)
+        valid_writer.add_scalar('auc (fpr<0.1)', auc10_score, iter_cnt)
+        # s = summary.scalar('auc (fpr<0.05)', auc05_score)
+        valid_writer.add_scalar('auc (fpr<0.05)', auc05_score, iter_cnt)
+        # s = summary.scalar('auc (fpr<0.02)', auc02_score)
+        valid_writer.add_scalar('auc (fpr<0.02)', auc02_score, iter_cnt)
+        # s = summary.scalar('auc (fpr<0.01)', auc01_score)
+        valid_writer.add_scalar('auc (fpr<0.01)', auc01_score, iter_cnt)
         valid_writer.close()
 
     return auc05_score
 
 def main(args):
     model_class = get_model_class(args.model)
+    os.makedirs(args.run_dir, exist_ok=True)
     model_class.add_config(argparser)
     args = argparser.parse_args()
     say(args)
@@ -221,6 +222,7 @@ def main(args):
 
 
     train_corpus_path = os.path.dirname(args.train) + "/corpus.tsv.gz"
+    print(train_corpus_path, os.path.dirname(args.train))
     train_corpus = Corpus([ tuple([train_corpus_path, os.path.dirname(args.train)]) ])
     valid_corpus_path = os.path.dirname(args.eval) + "/corpus.tsv.gz"
     valid_corpus = Corpus([ tuple([valid_corpus_path, os.path.dirname(args.eval)]) ])
@@ -241,7 +243,7 @@ def main(args):
         model.cuda()
     say("\n{}\n\n".format(model))
 
-    print model.state_dict().keys()
+    print(model.state_dict().keys())
 
     needs_grad = lambda x: x.requires_grad
     optimizer = optim.Adam(
@@ -250,11 +252,11 @@ def main(args):
     )
 
     if args.load_model:
-        print "Loading pretrained model"
+        print("Loading pretrained model")
         model.load_state_dict(torch.load(args.load_model))
 
     else:
-        print "Training will begin from scratch"
+        print("Training will begin from scratch")
  
 
     best_dev = 0
